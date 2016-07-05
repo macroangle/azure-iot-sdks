@@ -193,6 +193,10 @@ java/**/target/
 java/**/*.iml
 java/**/*dependency-reduced-pom.xml
 
+# Eclipse
+**/.classpath
+**/.project
+
 # Node.js
 **/.settings/
 **/node_modules/

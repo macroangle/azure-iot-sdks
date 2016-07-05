@@ -1,0 +1,18 @@
+body {
+  font-size: 10pt;
+  font-family: "Segoe UI", "Arial";
+  margin: 0;
+  padding: 0;
+}
+
+h1{
+    background-color: #000;
+    color: #fff;
+    margin:0;
+    padding: 20px;
+    position: absolute;
+    z-index: 1000;
+    right:0;
+    left:0;
+    top:0;
+}

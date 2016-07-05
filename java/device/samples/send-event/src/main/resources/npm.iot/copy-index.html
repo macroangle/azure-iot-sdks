@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>iPOS: Internet of Things</title>
+        <link rel="stylesheet" type="text/css" href="/_assets/style.css" />
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script>
+            var url = 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/';
+            google.charts.load('current', { 'packages': ['map'] });
+            google.charts.setOnLoadCallback(drawMap);
+            function drawMap() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('number', 'Lat');
+                data.addColumn('number', 'Long');
+                data.addColumn('string', 'Name');
+                //data.addColumn('string', 'Marker');
+
+                data.addRows([
+                    [13.0273660,77.6557600, 'my location'],
+                    [12.5715990,77.5945630 , 'Landmark-2'],
+                    [12.6715990,77.4945630 , 'Landmark-3'],
+                    [12.7715990,77.3945630 , 'Landmark-4'],
+                    [12.8715990,77.2945630 , 'Landmark-5'],
+                    [12.9715990,76.1945630 , 'Landmark-6']
+                ]);
+
+                var options = {
+                    mapType: 'normal',
+                    zoomLevel: 10,
+                    showTip: true,
+                    height: 760,
+                    showLine: false
+                };
+                var map = new google.visualization.Map(document.getElementById('chart_div'));
+                map.draw(data, options);
+            };
+        </script>
+    </head>
+    <body>
+        <h1>
+            <span>iPOS : an intelligent point of sale</span>
+            <div style="float: right;" id="usersConnected"></div>
+        </h1>
+        <ul id="notes"></ul>
+        <div id="chart_div"></div>
+
+
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+            var iPOS = (function(){
+                var salePoints = {};
+                return {
+                    render: function(data){
+                        this.set(data);
+                        var html = ''
+                        for(var i in data){
+                            html += '<li>' + data[i].note + '</li>'
+                        }
+                        //$('#notes').html(html);
+                    },
+                    set: function(data){
+                        salePoints = data;
+                    },
+                    get: function(){
+                        return salePoints;
+                    }
+                };
+            }());
+            $(document).ready(function(){
+                var socket = io.connect('http://localhost:3000');
+                socket.on('initial notes', function(data){
+                    iPOS.render(data);
+                });
+                //New socket connected, display new count on page
+                socket.on('users connected', function(data){
+                    $('#usersConnected').html('Connected Users: ' + data);
+                });
+            })
+        </script>
+    </body>
+</html>

@@ -18,9 +18,13 @@ public class SendEvent
     {
         public void execute(IotHubStatusCode status, Object context)
         {
-            Integer i = (Integer) context;
-            System.out.println("IoT Hub responded to message " + i.toString()
-                    + " with status " + status.name());
+            if(context != null && context instanceof Integer) {
+                Integer i = (Integer) context;
+                System.out.println("IoT Hub responded to message " + i.toString()
+                + " with status " + status.name());
+            } else {
+                System.out.println("IoT Hub responded with status " + status.name());
+            }
         }
     }
 
@@ -51,6 +55,7 @@ public class SendEvent
         }
 
         String connString = args[0];
+        connString = "HostName=rasBarryPi.azure-devices.net;DeviceId=raspberryPiTest;SharedAccessKey=onMnOPM4lqUJ86gZ4gT/bI8IzxLo+/j1l5s639Tzr/s=";
         int numRequests;
         try
         {
