@@ -39,15 +39,20 @@
                 map.draw(data, options);
                 
                 var socket = io.connect('http://localhost:3000');
-                socket.on('initial messages', function(data) {
-                    
+                socket.on('initial messages', function(socketData) {
+                    for (var i = 0; i < socketData.length; i++){
+                        var pos = JSON.parse(socketData[i].message.replace(/'/g, '"'));
+	                    data.addRows([
+	                            [pos.lat, pos.lng, "Total Value: " + pos.total]
+	                        ]);
+                    }
+                    map.draw(data, options);
                 })
                 
                 // New message emitted, add it to our list of current messages
                 socket.on('new message', function(socketData){
                     //alert("received new note " + data + " - " + data.message);
                     var pos = JSON.parse(socketData.message.replace(/'/g, '"'));
-                    alert("Adding point " + pos.lat + "-" + pos.lng);
                     data.addRows([
                             [pos.lat, pos.lng, "Total Value: " + pos.total]
                         ]);
