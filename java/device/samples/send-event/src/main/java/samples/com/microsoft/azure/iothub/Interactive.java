@@ -104,7 +104,7 @@ public class Interactive {
         if(items != null && items.size() > 0) {
             builder.append(", items: [");
             for (Item item : items) {
-                builder.append("{\"name\": \""+ item.getName()+ "\", \"quantity\": " + item.getQuantity() + ", \"subtotal\": " + item.getSubtotal() + "}");
+                builder.append("{'name': '"+ item.getName()+ "', 'quantity': " + item.getQuantity() + ", 'subtotal': " + item.getSubtotal() + "}");
             }
             builder.append("]");
         }
