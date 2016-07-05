@@ -3,22 +3,21 @@ package samples.com.microsoft.azure.iothub;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
-
-import samples.com.microsoft.azure.iothub.Interactive.Location;
 
 public class Interactive {
 
     Scanner input = new Scanner ( System.in );
     String[] category = new String[] {"Produce", "Dangerous Goods", "Entertainment", "Cleaning", "Office Supplies", "Automotive"};
     private static List<Location> locations = new ArrayList<Location>() {{
-        add(new Location(13.0273660,77.6557600, "Bangalore"));
-        add(new Location(12.5715990,77.5945630, ""));
-        add(new Location(12.6715990,77.4945630, ""));
-        add(new Location(12.7715990,77.3945630, ""));
-        add(new Location(12.8715990,77.2945630, ""));
-        add(new Location(12.9715990,76.1945630, ""));
+        add(new Location(12.95396,77.4908534, "Bangalore"));
+        add(new Location(12.3106435,76.6006702, "Mysore"));
+        add(new Location(12.5224578,76.8792097, "Mandya"));
+        add(new Location(12.7143589,77.2668972, "Ramanagara"));
+        add(new Location(13.1297379,78.1085656, "Kolar"));
+        add(new Location(13.3493819,77.0625894, "Tumkur"));
     }};
     EventManager eventManager = new EventManager();
     
@@ -72,7 +71,8 @@ public class Interactive {
             //System.out.println("| Options:                             |");
             System.out.println("|        1. Enter Total                  |");
             System.out.println("|        2. Enter items                  |");
-            System.out.println("|        3. Exit                         |");
+            System.out.println("|        3. Demo Mode 1                  |");
+            System.out.println("|        4. Exit                         |");
             System.out.println("==========================================");
             System.out.println("Enter your choice : ");
             swValue = Integer.parseInt(input.nextLine());
@@ -87,14 +87,28 @@ public class Interactive {
                 a.enterItems();
                 break;
             case 3:
+                startDemoMode1(50);
+                break;
+            case 4:
                 eventManager.closeConnection();
                 System.exit(0);
             default:
                 System.out.println("Invalid selection");
             }
-        }while(swValue < 4);
+        }while(swValue < 5);
     }
     
+    private void startDemoMode1(int totalMessages) {
+        for(int i=0; i<totalMessages; i++) {
+            eventManager.sentEvent(getJson(ThreadLocalRandom.current().nextInt(0, 10000), null));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private String getJson(int total, List<Item> items) {
         StringBuilder builder = new StringBuilder();
         builder.append("{'total': " + total);
@@ -113,7 +127,11 @@ public class Interactive {
     }
     
     private Location getRandomLocation() {
-        return locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
+        Location location = locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
+        double[] randomNearbyLocation = getRandomNearbyLocation(location.getLat(), location.lng, 10000);
+        location.setLat(randomNearbyLocation[0]);
+        location.setLng(randomNearbyLocation[1]);
+        return location;
     }
     
     class Item {
@@ -163,6 +181,14 @@ public class Interactive {
         public String getName() {
             return name;
         }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
         
     }
     
@@ -171,7 +197,28 @@ public class Interactive {
         a.menu(a);
         
         // Display menu graphics
+//        getRandomNearbyLocation(12.95396,77.4908534, 10000);
+    }
+    
+    public static double[] getRandomNearbyLocation(double x0, double y0, int radius) {
+        Random random = new Random();
 
+        // Convert radius from meters to degrees
+        double radiusInDegrees = radius / 111000f;
+
+        double u = random.nextDouble();
+        double v = random.nextDouble();
+        double w = radiusInDegrees * Math.sqrt(u);
+        double t = 2 * Math.PI * v;
+        double x = w * Math.cos(t);
+        double y = w * Math.sin(t);
+
+        // Adjust the x-coordinate for the shrinking of the east-west distances
+        double new_x = x / Math.cos(y0);
+
+        double foundLongitude = new_x + x0;
+        double foundLatitude = y + y0;
+        return new double [] {foundLongitude, foundLatitude};
     }
 
 }
