@@ -131,10 +131,11 @@ public class Interactive {
         builder.append(",'lat': " + location.getLat());
         builder.append(",'lng': " + location.getLng());
         if(items != null && items.size() > 0) {
-            builder.append(", items: [");
+            builder.append(", 'items': [");
             for (Item item : items) {
-                builder.append("{'name': '"+ item.getName()+ "', 'quantity': " + item.getQuantity() + ", 'subtotal': " + item.getSubtotal() + "}");
+                builder.append("{'name': '"+ item.getName()+ "', 'category': '" + item.getCategory() + "', 'quantity': " + item.getQuantity() + ", 'subtotal': " + item.getSubtotal() + "},");
             }
+            builder.deleteCharAt(builder.length() - 1);
             builder.append("]");
         }
         builder.append("}");
