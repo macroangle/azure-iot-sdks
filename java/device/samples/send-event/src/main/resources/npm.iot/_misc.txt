@@ -26,3 +26,39 @@
                     var newNote = 'This is a random ' + (Math.floor(Math.random() * 100) + 1)  + ' note'
                     socket.emit('new note', {note: newNote})
                 })
+
+
+
+                
+        
+        <script type="text/javascript">
+            /*var iPOS = (function(){
+                var salePoints = {};
+                return {
+                    render: function(data){
+                        this.set(data);
+                        var html = ''
+                        for(var i in data){
+                            html += '<li>' + data[i].note + '</li>'
+                        }
+                        //$('#notes').html(html);
+                    },
+                    set: function(data){
+                        salePoints = data;
+                    },
+                    get: function(){
+                        return salePoints;
+                    }
+                };
+            }());
+            $(document).ready(function(){
+                var socket = io.connect('http://localhost:3000');
+                socket.on('initial messages', function(data){
+                    iPOS.render(data);
+                });
+                //New socket connected, display new count on page
+                socket.on('users connected', function(data){
+                    $('#usersConnected').html('Connected Users: ' + data);
+                });
+            })*/
+        </script>

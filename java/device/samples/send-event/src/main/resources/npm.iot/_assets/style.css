@@ -1,6 +1,6 @@
 body {
-  font-size: 10pt;
-  font-family: "Segoe UI", "Arial";
+  font-size: 12pt;
+  font-family: "Segoe UI","Arial";
   margin: 0;
   padding: 0;
 }
@@ -15,4 +15,61 @@ h1{
     right:0;
     left:0;
     top:0;
+}
+h2{
+  color: #000;
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+#chart_stats{
+  width: 50% !important; 
+  float: left;
+  background-color: #B3D1FF;
+  overflow-y: auto;
+}
+#chart_stats div{
+  width: 94%;
+  margin: 0 auto;
+  padding-top: 80px;
+}
+#chart_div{
+  width: 50% !important;
+  float: right;
+}
+th{
+  text-align: left;
+}
+h3{
+  font-size: 1.5em;
+  background-color: #0ea3c9;
+  color: #000;
+  padding:10px;
+  display: inline-block;
+  font-weight: normal;
+}
+h3 span{
+  font-size: 0.7em;
+  display: block;
+  font-weight: bold;
+}
+table.innerTable{
+  border-collapse: collapse;
+}
+
+table.innerTable td, table.innerTable th{
+  border: 2px solid #fff;
+  padding: 8px;
+  vertical-align: top;
+}
+table.innerTable th{
+  background-color: #0ea3c9;
+  border: 2px solid #0ea3c9;
+  color: #fff;
+}
+table{
+  width: 100%;
+}
+table td{
+  vertical-align: top;
 }

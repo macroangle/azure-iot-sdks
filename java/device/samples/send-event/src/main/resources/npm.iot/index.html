@@ -17,47 +17,45 @@
                 data.addColumn('number', 'Lat');
                 data.addColumn('number', 'Long');
                 data.addColumn('string', 'Name');
-                //data.addColumn('string', 'Marker');
-
-                /*data.addRows([
-                    [13.0273660,77.6557600, 'my location'],
-                    [12.5715990,77.5945630 , 'Landmark-2'],
-                    [12.6715990,77.4945630 , 'Landmark-3'],
-                    [12.7715990,77.3945630 , 'Landmark-4'],
-                    [12.8715990,77.2945630 , 'Landmark-5'],
-                    [12.9715990,76.1945630 , 'Landmark-6']
-                ]);*/
+                data.addColumn('string', 'Marker');
 
                 var options = {
                     mapType: 'normal',
-                    zoomLevel: 10,
+                    zoomLevel: 7,
                     showTip: true,
-                    height: 760,
-                    showLine: false
+                    showLine: false,
+                    icons: {
+                      blue: {
+                        normal: 'http://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/24/Pin-red-icon.png',
+                        selected: 'http://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/24/Pin-red-icon.png'
+                      }
+                    }
                 };
                 var map = new google.visualization.Map(document.getElementById('chart_div'));
                 map.draw(data, options);
-                
+
                 var socket = io.connect('http://localhost:3000');
                 socket.on('initial messages', function(socketData) {
                     for (var i = 0; i < socketData.length; i++){
                         var pos = JSON.parse(socketData[i].message.replace(/'/g, '"'));
-	                    data.addRows([
-	                            [pos.lat, pos.lng, "Total Value: " + pos.total]
-	                        ]);
+                        data.addRows([
+                            [pos.lat, pos.lng, "Total Value: " + pos.total,'blue']
+                        ]);
                     }
+                    options.height = $(window).height() - 5;
+                    $('#chart_stats').height($(window).height()-5);
                     map.draw(data, options);
-                })
-                
+                });
+
                 // New message emitted, add it to our list of current messages
                 socket.on('new message', function(socketData){
                     //alert("received new note " + data + " - " + data.message);
                     var pos = JSON.parse(socketData.message.replace(/'/g, '"'));
                     data.addRows([
-                            [pos.lat, pos.lng, "Total Value: " + pos.total]
-                        ]);
+                        [pos.lat, pos.lng, "Total Value: " + pos.total, 'blue']
+                    ]);
                     map.draw(data, options);
-                })
+                });
             };
         </script>
     </head>
@@ -66,41 +64,67 @@
             <span>iPOS : an intelligent point of sale</span>
             <div style="float: right;" id="usersConnected"></div>
         </h1>
-        <ul id="notes"></ul>
+        <div id="chart_stats">
+            <div>
+                <h3><span>Total Sales</span>Rs. 1,540,00.00 /-</h3>
+                <table style="width: 100%;">
+                    <tr><td>
+                        
+                    <h2>Statistics by Items</h2>
+                    <table class="innerTable">
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Subtotals</th>
+                        </tr>
+                        <tr>
+                            <td>Drill Machine</td>
+                            <td>10,0000</td>
+                        </tr>
+                        <tr>
+                            <td>Asian Paints</td>
+                            <td>1000</td>
+                        </tr>
+                        <tr>
+                            <td>Flooring Tiles</td>
+                            <td>1800</td>
+                        </tr>
+                        <tr>
+                            <td>Refrigerator</td>
+                            <td>14000</td>
+                        </tr>
+                        <tr>
+                            <td>Panasonic LED TV</td>
+                            <td>34000</td>
+                        </tr>
+                    </table>
+                </td><td>
+                    <h2>Statistics by Category</h2>
+                    <table class="innerTable">
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Subtotals</th>
+                        </tr>
+                        <tr>
+                            <td>Heavy Machinery</td>
+                            <td>10000</td>
+                        </tr>
+                        <tr>
+                            <td>Electronics</td>
+                            <td>10000</td>
+                        </tr>
+                        <tr>
+                            <td>Heavy Machinery</td>
+                            <td>10000</td>
+                        </tr>
+                        <tr>
+                            <td>Heavy Machinery</td>
+                            <td>10000</td>
+                        </tr>
+                    </table>
+                </td></tr></table>
+                </td>
+            </div>
+        </div>
         <div id="chart_div"></div>
-
-
-        
-        <script type="text/javascript">
-            /*var iPOS = (function(){
-                var salePoints = {};
-                return {
-                    render: function(data){
-                        this.set(data);
-                        var html = ''
-                        for(var i in data){
-                            html += '<li>' + data[i].note + '</li>'
-                        }
-                        //$('#notes').html(html);
-                    },
-                    set: function(data){
-                        salePoints = data;
-                    },
-                    get: function(){
-                        return salePoints;
-                    }
-                };
-            }());
-            $(document).ready(function(){
-                var socket = io.connect('http://localhost:3000');
-                socket.on('initial messages', function(data){
-                    iPOS.render(data);
-                });
-                //New socket connected, display new count on page
-                socket.on('users connected', function(data){
-                    $('#usersConnected').html('Connected Users: ' + data);
-                });
-            })*/
-        </script>
     </body>
 </html>
