@@ -21,11 +21,11 @@ public class Interactive {
     }};
     private static List<Item> items = new ArrayList<Item>() {{
         add(new Item("Apples", category[0], 12));
-        add(new Item("Baking Soda", catergory[1], 13));
-        add(new Item("Kids Dvd", category[2], 14));
-        add(new Item("washing kit",category[3], 15));
-        add(new Item("Computer Accessories", category[4], 16));
-        add(new Item("Biking Stuff", category[5], 17));
+        add(new Item("Fireworks/pyrotechnics", catergory[1], 13));
+        add(new Item("Gaming Console", category[2], 14));
+        add(new Item("Abrasive Cleaners",category[3], 15));
+        add(new Item("Cubicle supplies", category[4], 16));
+        add(new Item("Automotive supplies", category[5], 17));
     }};
     EventManager eventManager = new EventManager();
     
