@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Interactive {
 
     Scanner input = new Scanner ( System.in );
-    private static String[] category = new String[] {"Produce", "Dangerous Goods", "Entertainment", "Cleaning", "Office Supplies", "Automotive"};
+    private static String[] category = new String[] {"Produce", "Dangerous Goods", "Office Supplies", "Automotive"};
     private static List<Location> locations = new ArrayList<Location>() {{
         add(new Location(12.95396,77.4908534, "Bangalore"));
         add(new Location(12.3106435,76.6006702, "Mysore"));
@@ -21,11 +21,13 @@ public class Interactive {
     }};
     private static List<Item> items = new ArrayList<Item>() {{
         add(new Item("Apples", category[0], 12));
-        add(new Item("Fireworks/pyrotechnics", category[1], 13));
-        add(new Item("Gaming Console", category[2], 14));
-        add(new Item("Abrasive Cleaners",category[3], 15));
-        add(new Item("Cubicle supplies", category[4], 16));
-        add(new Item("Automotive supplies", category[5], 17));
+        add(new Item("Cotton-seed (Hybrid)", category[0], 13));
+        add(new Item("insecticide gases", category[1], 14));
+        add(new Item("Fertilizer ammoniating solution",category[1], 15));
+        add(new Item("Toner cartridges", category[2], 16));
+        add(new Item("Zip drive tapes", category[2], 17));
+        add(new Item("Hitches & Accessories", category[3], 18));
+        add(new Item("Sockets & Ratchets", category[3], 19));
     }};
     EventManager eventManager = new EventManager();
     
@@ -72,7 +74,7 @@ public class Interactive {
         } while(itemoption < items.size());
         
         System.out.println("Total purchase value " + total);
-        eventManager.sentEvent(getJson(total, selectedItems));
+       // eventManager.sentEvent(getJson(total, selectedItems));
     }
     
     public void menu(Interactive a)
