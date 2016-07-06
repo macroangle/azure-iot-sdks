@@ -12,6 +12,35 @@
             var url = 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/';
             google.charts.load('current', { 'packages': ['map'] });
             google.charts.setOnLoadCallback(drawMap);
+
+            function aggregateData(items){
+                var statsByItem ='<tr><th>Item Name</th><th>Subtotals</th></tr>',
+                    statsByCategory='<tr><th>Category Name</th><th>Subtotals</th></tr>';
+
+                var itemCollection = {}, categoryCollection = {};
+                for(var item in items){
+                    var k = items[item];
+                    itemCollection[k.name] = itemCollection[k.name] || 0;
+
+                    itemCollection[k.name] += k.subtotal;
+
+                    categoryCollection[k.category] = categoryCollection[k.category] || 0;
+                    categoryCollection[k.category] += k.subtotal;
+                }
+                
+                for(var iname in itemCollection){
+                    statsByItem += '<tr><td>'+ iname +'</td><td> Rs. '+ itemCollection[iname] +' /-</td></tr>';
+                }
+                for(var iname in categoryCollection){
+                    statsByCategory += '<tr><td>'+ iname +'</td><td> Rs. '+ categoryCollection[iname] +' /-</td></tr>';
+                }
+                $('#statsByItem').html(statsByItem);
+                $('#statsByCategory').html(statsByCategory);
+            }
+
+            function renderTotal(total){
+                $('#totalSales').html('<span>Total Sales</span>Rs. ' + total);
+            }
             function drawMap() {
                 var data = new google.visualization.DataTable();
                 data.addColumn('number', 'Lat');
@@ -32,16 +61,23 @@
                     }
                 };
                 var map = new google.visualization.Map(document.getElementById('chart_div'));
-                map.draw(data, options);
 
                 var socket = io.connect('http://localhost:3000');
                 socket.on('initial messages', function(socketData) {
+                    var total=0;
                     for (var i = 0; i < socketData.length; i++){
-                        var pos = JSON.parse(socketData[i].message.replace(/'/g, '"'));
-                        data.addRows([
-                            [pos.lat, pos.lng, "Total Value: " + pos.total,'blue']
-                        ]);
+                        if(socketData[i].message){
+                            var pos = JSON.parse(socketData[i].message.replace(/'/g, '"'));
+                            data.addRows([
+                                [pos.lat, pos.lng, "Total Value: " + pos.total,'blue']
+                            ]);
+                            if(pos.items){
+                                aggregateData(pos.items);
+                            }
+                            total += pos.total
+                        }
                     }
+                    renderTotal(total);
                     options.height = $(window).height() - 5;
                     $('#chart_stats').height($(window).height()-5);
                     map.draw(data, options);
@@ -54,6 +90,8 @@
                     data.addRows([
                         [pos.lat, pos.lng, "Total Value: " + pos.total, 'blue']
                     ]);
+                    options.height = $(window).height() - 5;
+                    $('#chart_stats').height($(window).height()-5);
                     map.draw(data, options);
                 });
             };
@@ -66,63 +104,18 @@
         </h1>
         <div id="chart_stats">
             <div>
-                <h3><span>Total Sales</span>Rs. 1,540,00.00 /-</h3>
+                <h3 id="totalSales"></h3>
                 <table style="width: 100%;">
-                    <tr><td>
-                        
-                    <h2>Statistics by Items</h2>
-                    <table class="innerTable">
-                        <tr>
-                            <th>Item Name</th>
-                            <th>Subtotals</th>
-                        </tr>
-                        <tr>
-                            <td>Drill Machine</td>
-                            <td>10,0000</td>
-                        </tr>
-                        <tr>
-                            <td>Asian Paints</td>
-                            <td>1000</td>
-                        </tr>
-                        <tr>
-                            <td>Flooring Tiles</td>
-                            <td>1800</td>
-                        </tr>
-                        <tr>
-                            <td>Refrigerator</td>
-                            <td>14000</td>
-                        </tr>
-                        <tr>
-                            <td>Panasonic LED TV</td>
-                            <td>34000</td>
-                        </tr>
-                    </table>
-                </td><td>
-                    <h2>Statistics by Category</h2>
-                    <table class="innerTable">
-                        <tr>
-                            <th>Category Name</th>
-                            <th>Subtotals</th>
-                        </tr>
-                        <tr>
-                            <td>Heavy Machinery</td>
-                            <td>10000</td>
-                        </tr>
-                        <tr>
-                            <td>Electronics</td>
-                            <td>10000</td>
-                        </tr>
-                        <tr>
-                            <td>Heavy Machinery</td>
-                            <td>10000</td>
-                        </tr>
-                        <tr>
-                            <td>Heavy Machinery</td>
-                            <td>10000</td>
-                        </tr>
-                    </table>
-                </td></tr></table>
-                </td>
+                    <tr>
+                        <td>
+                            <h2>Statistics by Items</h2>
+                            <table class="innerTable" id="statsByItem"></table>
+                        </td><td>
+                            <h2>Statistics by Category</h2>
+                            <table class="innerTable" id="statsByCategory"></table>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div id="chart_div"></div>
