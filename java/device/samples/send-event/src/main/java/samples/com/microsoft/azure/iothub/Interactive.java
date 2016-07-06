@@ -21,6 +21,11 @@ public class Interactive {
     }};
     private static List<Item> items = new ArrayList<Item>() {{
         add(new Item("Apples", category[0], 12));
+        add(new Item("Baking Soda", catergory[1], 13));
+        add(new Item("Kids Dvd", category[2], 14));
+        add(new Item("washing kit",category[3], 15));
+        add(new Item("Computer Accessories", category[4], 16));
+        add(new Item("Biking Stuff", category[5], 17));
     }};
     EventManager eventManager = new EventManager();
     
@@ -35,7 +40,7 @@ public class Interactive {
         int test = 0;
         int subtotal = 0;
         int itemoption;
-        do
+       /* do
         {
             System.out.println("Choose items from below options");
             System.out.println("1. Apple");
@@ -61,7 +66,7 @@ public class Interactive {
             }
         }while(itemoption<3);
     }
-
+*/
     public void menu(Interactive a)
     {
         int swValue;
