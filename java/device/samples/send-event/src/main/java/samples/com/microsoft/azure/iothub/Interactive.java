@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Interactive {
 
     Scanner input = new Scanner ( System.in );
-    String[] category = new String[] {"Produce", "Dangerous Goods", "Entertainment", "Cleaning", "Office Supplies", "Automotive"};
+    private static String[] category = new String[] {"Produce", "Dangerous Goods", "Entertainment", "Cleaning", "Office Supplies", "Automotive"};
     private static List<Location> locations = new ArrayList<Location>() {{
         add(new Location(12.95396,77.4908534, "Bangalore"));
         add(new Location(12.3106435,76.6006702, "Mysore"));
@@ -18,6 +18,14 @@ public class Interactive {
         add(new Location(12.7143589,77.2668972, "Ramanagara"));
         add(new Location(13.1297379,78.1085656, "Kolar"));
         add(new Location(13.3493819,77.0625894, "Tumkur"));
+    }};
+    private static List<Item> items = new ArrayList<Item>() {{
+        add(new Item("Apples", category[0], 12));
+        add(new Item("Fireworks/pyrotechnics", category[1], 13));
+        add(new Item("Gaming Console", category[2], 14));
+        add(new Item("Abrasive Cleaners",category[3], 15));
+        add(new Item("Cubicle supplies", category[4], 16));
+        add(new Item("Automotive supplies", category[5], 17));
     }};
     EventManager eventManager = new EventManager();
     
@@ -28,38 +36,45 @@ public class Interactive {
         return;
     }
     
-    public void enterItems()
-    {
-        int test = 0;
+    public void enterItems() {
+        int total = 0;
         int subtotal = 0;
         int itemoption;
-        do
-        {
-            System.out.println("Choose items from below options");
-            System.out.println("1. Apple");
-            System.out.println("2. Banana");
-            System.out.println("3. Return to main menu");
+        int quantity;
+        List<Item> selectedItems = new ArrayList<>();
+        
+        System.out.println("Choose item from above options: ");
+        int index = 1;
+        for (Item item : items) {
+            System.out.println(index + ". " + item.getName());
+            index++;
+        }
+        System.out.println(index + ". Finish");
+        
+        do {
+            System.out.println("Choose item from above options: ");
             itemoption = Integer.parseInt(input.nextLine());
-            switch(itemoption)
-            {
-            case 1:
-                System.out.println("Enter amount for apple : ");
-                test = Integer.parseInt(input.nextLine());
-                System.out.println("The amount for apple is "+test);
-                subtotal += test;
-                break;
-            case 2:
-                System.out.println("Enter amount for banana : ");
-                test = Integer.parseInt(input.nextLine());
-                System.out.println("The amount for banana is "+test);
-                subtotal += test;
-                break;
-            case 3:
-                return;
+            
+            if(itemoption < items.size()) {
+                Item chosenItem = items.get(itemoption - 1);
+                System.out.println("Enter quantity for " + chosenItem.getName()+ ": ");
+                quantity = Integer.parseInt(input.nextLine());
+                subtotal = quantity * chosenItem.getPricePerUnit();
+                System.out.println("Selected " + chosenItem.getName() + ", for price " + subtotal);
+                total += subtotal;
+                
+                Item selectedItem = new Item(chosenItem.getName(), chosenItem.getCategory(), chosenItem.getPricePerUnit());
+                selectedItem.setSubtotal(subtotal);
+                selectedItem.setQuantity(quantity);
+                selectedItems.add(selectedItem);
             }
-        }while(itemoption<3);
+            
+        } while(itemoption < items.size());
+        
+        System.out.println("Total purchase value " + total);
+        eventManager.sentEvent(getJson(total, selectedItems));
     }
-
+    
     public void menu(Interactive a)
     {
         int swValue;
@@ -134,10 +149,20 @@ public class Interactive {
         return location;
     }
     
-    class Item {
+    static class Item {
         private String name;
+        private String category;
+        private int pricePerUnit;
         private int quantity;
         private int subtotal;
+        
+        public Item(String name, String category, int pricePerUnit) {
+            super();
+            this.name = name;
+            this.category = category;
+            this.pricePerUnit = pricePerUnit;
+        }
+        
         public String getName() {
             return name;
         }
@@ -155,6 +180,18 @@ public class Interactive {
         }
         public void setSubtotal(int subtotal) {
             this.subtotal = subtotal;
+        }
+        public String getCategory() {
+            return category;
+        }
+        public void setCategory(String category) {
+            this.category = category;
+        }
+        public int getPricePerUnit() {
+            return pricePerUnit;
+        }
+        public void setPricePerUnit(int pricePerUnit) {
+            this.pricePerUnit = pricePerUnit;
         }
     }
     
