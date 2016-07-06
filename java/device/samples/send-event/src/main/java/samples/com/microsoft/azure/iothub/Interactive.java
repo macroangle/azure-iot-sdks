@@ -21,7 +21,7 @@ public class Interactive {
     }};
     private static List<Item> items = new ArrayList<Item>() {{
         add(new Item("Apples", category[0], 12));
-        add(new Item("Baking Soda", catergory[1], 13));
+        add(new Item("Baking Soda", category[1], 13));
         add(new Item("Kids Dvd", category[2], 14));
         add(new Item("washing kit",category[3], 15));
         add(new Item("Computer Accessories", category[4], 16));
@@ -37,36 +37,37 @@ public class Interactive {
     }
     
     public void enterItems() {
-        int test = 0;
+        int total = 0;
         int subtotal = 0;
         int itemoption;
-       /* do
-        {
-            System.out.println("Choose items from below options");
-            System.out.println("1. Apple");
-            System.out.println("2. Banana");
-            System.out.println("3. Return to main menu");
+        int quantity;
+        
+        System.out.println("Choose item from above options: ");
+        int index = 1;
+        for (Item item : items) {
+            System.out.println(index + ". " + item.getName());
+            index++;
+        }
+        System.out.println(index + ". Finish");
+        
+        do {
+            System.out.println("Choose item from above options: ");
             itemoption = Integer.parseInt(input.nextLine());
-            switch(itemoption)
-            {
-            case 1:
-                System.out.println("Enter amount for apple : ");
-                test = Integer.parseInt(input.nextLine());
-                System.out.println("The amount for apple is "+test);
-                subtotal += test;
-                break;
-            case 2:
-                System.out.println("Enter amount for banana : ");
-                test = Integer.parseInt(input.nextLine());
-                System.out.println("The amount for banana is "+test);
-                subtotal += test;
-                break;
-            case 3:
-                return;
+            
+            if(itemoption < items.size()) {
+                Item chosenItem = items.get(itemoption - 1);
+                System.out.println("Enter quantity for " + chosenItem.getName()+ ": ");
+                quantity = Integer.parseInt(input.nextLine());
+                subtotal = quantity * chosenItem.getPricePerUnit();
+                System.out.println("Selected " + chosenItem.getName() + ", for price " + subtotal);
+                total += subtotal;
             }
-        }while(itemoption<3);
+            
+        } while(itemoption < items.size());
+        
+        System.out.println("Total purchase value " + total);
     }
-*/
+    
     public void menu(Interactive a)
     {
         int swValue;
