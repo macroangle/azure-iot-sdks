@@ -41,6 +41,7 @@ public class Interactive {
         int subtotal = 0;
         int itemoption;
         int quantity;
+        List<Item> selectedItems = new ArrayList<>();
         
         System.out.println("Choose item from above options: ");
         int index = 1;
@@ -61,11 +62,17 @@ public class Interactive {
                 subtotal = quantity * chosenItem.getPricePerUnit();
                 System.out.println("Selected " + chosenItem.getName() + ", for price " + subtotal);
                 total += subtotal;
+                
+                Item selectedItem = new Item(chosenItem.getName(), chosenItem.getCategory(), chosenItem.getPricePerUnit());
+                selectedItem.setSubtotal(subtotal);
+                selectedItem.setQuantity(quantity);
+                selectedItems.add(selectedItem);
             }
             
         } while(itemoption < items.size());
         
         System.out.println("Total purchase value " + total);
+        eventManager.sentEvent(getJson(total, selectedItems));
     }
     
     public void menu(Interactive a)
