@@ -59,7 +59,8 @@ angular.module('iPOSModule', ['counter'])
                                 position.plotted = true;
                                 var marker = new google.maps.Marker({
                                     position: new google.maps.LatLng(position.lat, position.lng),
-                                    map: map
+                                    map: map,
+                                    icon: 'http://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/24/Pin-red-icon.png'
                                 });
                                 if(position.items){
                                     var infowindow = new google.maps.InfoWindow({
@@ -71,6 +72,7 @@ angular.module('iPOSModule', ['counter'])
                                 }
                                 if(position.add){
                                     marker.animation = google.maps.Animation.DROP;
+                                    marker.icon = 'http://checker-website-assets.s3-website-us-east-1.amazonaws.com/images/star-writeareview-active.png';
                                     marker.setMap(map);
                                 }else{
                                     marker.setMap(map);
