@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="iPOSModule">
+    <head>
+        <title>iPOS: Internet of Things</title>
+        <link rel="stylesheet" type="text/css" href="/_assets/style.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCcQUmkd5VifBGspvtk8zf7paywj0B_y0M" type="text/javascript" defer></script>
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/_assets/lib/angular.min.js"></script>
+        <script type="text/javascript" src="/_assets/app.js"></script>
+    </head>
+    <body ng-controller="homeCtrl">
+        <h1>
+            <span>iPOS : an intelligent point of sale</span>
+            <div style="float: right;" id="usersConnected"></div>
+        </h1>
+        <div id="chart_stats">
+            <div>
+                <h3 id="totalSales"><span>Total Sales Value</span>{{grossTotal | rupeeFilter}}</h3>
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <h2>Statistics by Items</h2>
+                            <table class="innerTable">
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Sub-Totals</th>
+                                </tr>
+                                <tr ng-repeat="(item,total) in totalByItems">
+                                    <td>{{item}}</td>
+                                    <td>{{total | rupeeFilter}}</td>
+                                </tr>
+                            </table>
+                        </td><td>
+                            <h2>Statistics by Category</h2>
+                            <table class="innerTable">
+                                <tr>
+                                    <th>Categor Name</th>
+                                    <th>Sub-Totals</th>
+                                </tr>
+                                <tr ng-repeat="(category,total) in totalByCategories">
+                                    <td>{{category}}</td>
+                                    <td>{{total | rupeeFilter}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="chart_div" g-chart="chart"></div>
+    </body>
+</html>

@@ -1,15 +1,3 @@
-/*
-var open = {
-    lat: 12345.677,
-    lon: 32132.778,
-    total: 1500,
-    items:[
-        {name: 'item 1', category: 'test', quantity: 10, subtotal: 1000}
-    ]
-}
-
-*/
-
 // Let’s make node/socketio listen on port 3000
 var io = require('socket.io').listen(3000);
 
@@ -22,27 +10,27 @@ var web = function() {
     app.get('/index.html', function (req, res) {
         res.sendFile(path.join(__dirname + '/index.html'));
     });
+    app.get('/ngIndex.html', function (req, res) {
+        res.sendFile(path.join(__dirname + '/ngIndex.html'));
+    });
     return app;
 };
 web().listen(8000, function(){
     console.log('Node Server has Started @8000');
 });
 
-
 // Configuration to Database
 var sql = require('mssql');
 var config = {
     user: 'rajesh',
     password: 'jobvite@12345',
-    server: 'raspberry.database.windows.net', // You can use 'localhost\\instance' to connect to named instance
+    server: 'raspberry.database.windows.net',
     database: 'raspberrysqldb',
-    stream: true, // You can enable streaming globally
-
+    stream: true,
     options: {
-        encrypt: true // Use this if you're on Windows Azure
+        encrypt: true
     }
-}
- 
+};
 
 // Define/initialize our global vars
 var messages = [];
@@ -51,7 +39,7 @@ var socketCount = 0;
 var prevId = 0;
 
 sql.connect(config, function(err){
-    if (err) console.log(err)
+    if (err) console.log(err);
     
     io.sockets.on('connection', function(socket){
         // Socket has connected, increase socket count
@@ -75,8 +63,8 @@ sql.connect(config, function(err){
                     messages.push(data);
                     io.sockets.emit('new message', data);
                     prevId = data.id;
-                })
-        }, 5000)
+                });
+        }, 3000);
         
         // Check to see if initial query/notes are set
         if (! isInitMessages) {
@@ -91,13 +79,13 @@ sql.connect(config, function(err){
                 })
                 .on('done', function(){
                     // Only emit notes after query has been completed
-                    socket.emit('initial messages', messages)
-                })
+                    socket.emit('initial messages', messages);
+                });
 
-            isInitMessages = true
+            isInitMessages = true;
         } else {
             // Initial notes already exist, send out
-            socket.emit('initial messages', messages)
+            socket.emit('initial messages', messages);
         }
     });
 });
