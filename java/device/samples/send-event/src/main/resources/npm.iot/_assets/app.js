@@ -1,4 +1,4 @@
-angular.module('iPOSModule', [])
+angular.module('iPOSModule', ['counter'])
     .filter('rupeeFilter', ['$filter', function($filter){
         return function(item){
             return $filter('currency')(item, '\u20B9 ');
@@ -29,14 +29,14 @@ angular.module('iPOSModule', [])
         };
     }])
 
-    .directive('gChart',['$filter',function ($filter){
+    .directive('gChart',['$filter','$timeout', function ($filter, $timeout){
        return {
             restrict: 'A',
             replace: true,
             template: '<div></div>',
             link: function ($scope, elm, attr) {
                 //Initialize section height as per content
-                var sectionHeight = $(window).height()-5;
+                var sectionHeight = $(window).height();
                 angular.element(elm).height(sectionHeight);
                 $('#chart_stats').height(sectionHeight);
 
@@ -57,27 +57,29 @@ angular.module('iPOSModule', [])
                                     contentString += item.name + ' : ' + $filter('rupeeFilter')(item.subtotal) + '<br>';
                                 });
                                 position.plotted = true;
-                                var infowindow = new google.maps.InfoWindow({
-                                                  content: contentString
-                                                });
-
                                 var marker = new google.maps.Marker({
                                     position: new google.maps.LatLng(position.lat, position.lng),
                                     map: map
                                 });
-                                marker.addListener('click', function() {
-                                    infowindow.open(map, marker);
-                                });
+                                if(position.items){
+                                    var infowindow = new google.maps.InfoWindow({
+                                                  content: contentString
+                                                });
+                                    marker.addListener('click', function() {
+                                        infowindow.open(map, marker);
+                                    });
+                                }
                                 if(position.add){
-                                    window.setTimeout(function() {
-                                        marker.animation = google.maps.Animation.DROP;
-                                        marker.setMap(map);
-                                    },2000);
+                                    marker.animation = google.maps.Animation.DROP;
+                                    marker.setMap(map);
                                 }else{
                                     marker.setMap(map);
                                 }
                             }
                         });
+                       $timeout(function() {
+                           $scope.loading = false;
+                        },2000);
                     }
                 },true);
             }
@@ -85,13 +87,23 @@ angular.module('iPOSModule', [])
       }])
 
       .controller('homeCtrl', ['$scope', 'socket', function ($scope, socket) {
+            $scope.ctrl = {
+                myValue: 1000,
+                myTarget: 2000,
+                myDuration: 5000
+            };
             $scope.totalByItems = {};
             $scope.totalByCategories = {};
             $scope.grossTotal = 0;
-
+            $scope.grossTotalNew = 0;
+            $scope.loading = true;
             var chartData = [];
             var updateStatistics = function(itemData, newPoint){
-                $scope.grossTotal += (itemData.total || 0);
+                if(newPoint){
+                    $scope.grossTotalNew = $scope.grossTotal + (itemData.total || 0);
+                }else{
+                    $scope.grossTotal += (itemData.total || 0);
+                }
                 chartData.push({
                     lng: itemData.lng,
                     lat: itemData.lat,

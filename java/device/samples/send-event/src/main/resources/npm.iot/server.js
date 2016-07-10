@@ -8,9 +8,6 @@ var web = function() {
     var app = express();
     app.use('/_assets', express.static(__dirname + '/_assets'));
     app.get('/index.html', function (req, res) {
-        res.sendFile(path.join(__dirname + '/index.html'));
-    });
-    app.get('/ngIndex.html', function (req, res) {
         res.sendFile(path.join(__dirname + '/ngIndex.html'));
     });
     return app;

@@ -4,19 +4,30 @@
         <title>iPOS: Internet of Things</title>
         <link rel="stylesheet" type="text/css" href="/_assets/style.css" />
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
         <script src="//maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCcQUmkd5VifBGspvtk8zf7paywj0B_y0M" type="text/javascript" defer></script>
         <script src="http://localhost:3000/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="/_assets/lib/angular.min.js"></script>
+        <script type="text/javascript" src="/_assets/lib/angular-counter.js"></script>
         <script type="text/javascript" src="/_assets/app.js"></script>
     </head>
     <body ng-controller="homeCtrl">
+        <div class="overlay" ng-show="loading">
+            <img src="/_assets/loading.gif" />
+        </div>
         <h1>
             <span>iPOS : an intelligent point of sale</span>
             <div style="float: right;" id="usersConnected"></div>
         </h1>
+
         <div id="chart_stats">
             <div>
-                <h3 id="totalSales"><span>Total Sales Value</span>{{grossTotal | rupeeFilter}}</h3>
+                <h3>
+                    <span>Total Sales Value</span>
+                    <label class="counter" value="grossTotal" to="grossTotalNew" duration="1000" effect="swing">
+                        {{grossTotal | rupeeFilter}}
+                    </label>
+                </h3>
                 <table style="width: 100%;">
                     <tr>
                         <td>

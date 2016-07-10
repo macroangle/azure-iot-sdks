@@ -37,9 +37,13 @@
                     showTip: true,
                     showLine: false,
                     icons: {
-                      blue: {
+                      red: {
                         normal: 'http://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/24/Pin-red-icon.png',
                         selected: 'http://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/24/Pin-red-icon.png'
+                      },
+                      blue:{
+                        normal: 'http://www.myiconfinder.com/uploads/iconsets/24-24-2cf65dcba39e9ba577fccb630a2b93bf.png',
+                        selected: 'http://www.myiconfinder.com/uploads/iconsets/24-24-2cf65dcba39e9ba577fccb630a2b93bf.png'
                       }
                     }
                 };
@@ -85,7 +89,7 @@
                     //alert("received new note " + data + " - " + data.message);
                     var pos = JSON.parse(socketData.message.replace(/'/g, '"'));
                     data.addRows([
-                        [pos.lat, pos.lng, "Total Value: " + pos.total, 'blue']
+                        [pos.lat, pos.lng, "Total Value: " + pos.total, 'red']
                     ]);
 
                     if(pos.items){
