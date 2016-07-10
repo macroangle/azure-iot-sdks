@@ -13,34 +13,17 @@
             google.charts.load('current', { 'packages': ['map'] });
             google.charts.setOnLoadCallback(drawMap);
 
-            function aggregateData(items){
-                var statsByItem ='<tr><th>Item Name</th><th>Subtotals</th></tr>',
-                    statsByCategory='<tr><th>Category Name</th><th>Subtotals</th></tr>';
-
-                var itemCollection = {}, categoryCollection = {};
-                for(var item in items){
-                    var k = items[item];
-                    itemCollection[k.name] = itemCollection[k.name] || 0;
-
-                    itemCollection[k.name] += k.subtotal;
-
-                    categoryCollection[k.category] = categoryCollection[k.category] || 0;
-                    categoryCollection[k.category] += k.subtotal;
-                }
-                
-                for(var iname in itemCollection){
-                    statsByItem += '<tr><td>'+ iname +'</td><td> Rs. '+ itemCollection[iname] +' /-</td></tr>';
-                }
-                for(var iname in categoryCollection){
-                    statsByCategory += '<tr><td>'+ iname +'</td><td> Rs. '+ categoryCollection[iname] +' /-</td></tr>';
-                }
-                $('#statsByItem').html(statsByItem);
-                $('#statsByCategory').html(statsByCategory);
-            }
-
             function renderTotal(total){
                 $('#totalSales').html('<span>Total Sales</span>Rs. ' + total);
             }
+
+            function renderAggregation(id, htmlTABLE, collection){
+                for(var item in collection){
+                    htmlTABLE += '<tr><td>'+ item +'</td><td> Rs. '+ collection[item] +' /-</td></tr>';
+                }
+                $(id).html(htmlTABLE);
+            }
+
             function drawMap() {
                 var data = new google.visualization.DataTable();
                 data.addColumn('number', 'Lat');
@@ -60,11 +43,14 @@
                       }
                     }
                 };
+
                 var map = new google.visualization.Map(document.getElementById('chart_div'));
+                var total=0,
+                    itemCollection = {},
+                    categoryCollection = {};
 
                 var socket = io.connect('http://localhost:3000');
                 socket.on('initial messages', function(socketData) {
-                    var total=0;
                     for (var i = 0; i < socketData.length; i++){
                         if(socketData[i].message){
                             var pos = JSON.parse(socketData[i].message.replace(/'/g, '"'));
@@ -72,12 +58,23 @@
                                 [pos.lat, pos.lng, "Total Value: " + pos.total,'blue']
                             ]);
                             if(pos.items){
-                                aggregateData(pos.items);
+                                 for(var item in pos.items){
+                                    var k = pos.items[item];
+                                    itemCollection[k.name] = itemCollection[k.name] || 0;
+                                    itemCollection[k.name] += k.subtotal;
+
+                                    categoryCollection[k.category] = categoryCollection[k.category] || 0;
+                                    categoryCollection[k.category] += k.subtotal;
+                                }
                             }
-                            total += pos.total
+                            total += pos.total;
                         }
                     }
+                    renderAggregation('#statsByItem','<tr><th>Item Name</th><th>Subtotals</th></tr>',itemCollection);
+                    renderAggregation('#statsByCategory','<tr><th>Category Name</th><th>Subtotals</th></tr>',categoryCollection);
                     renderTotal(total);
+
+                    //Adjust height of chart stats
                     options.height = $(window).height() - 5;
                     $('#chart_stats').height($(window).height()-5);
                     map.draw(data, options);
@@ -90,6 +87,25 @@
                     data.addRows([
                         [pos.lat, pos.lng, "Total Value: " + pos.total, 'blue']
                     ]);
+
+                    if(pos.items){
+                        for(var item in pos.items){
+                            var k = pos.items[item];
+                            itemCollection[k.name] = itemCollection[k.name] || 0;
+                            itemCollection[k.name] += k.subtotal;
+
+                            categoryCollection[k.category] = categoryCollection[k.category] || 0;
+                            categoryCollection[k.category] += k.subtotal;
+                        }
+                    }
+                    total += pos.total;
+
+                    //re-draw map
+                    renderAggregation('#statsByItem','<tr><th>Item Name</th><th>Subtotals</th></tr>',itemCollection);
+                    renderAggregation('#statsByCategory','<tr><th>Category Name</th><th>Subtotals</th></tr>',categoryCollection);
+                    renderTotal(total);
+
+                    //Adjust height of chart stats
                     options.height = $(window).height() - 5;
                     $('#chart_stats').height($(window).height()-5);
                     map.draw(data, options);
